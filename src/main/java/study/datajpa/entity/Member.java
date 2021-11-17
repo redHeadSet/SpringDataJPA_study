@@ -8,6 +8,13 @@ import javax.persistence.*;
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id", "username", "age"})   // toString 출력 제한
+@NamedQuery(
+        name = "Member.namedQueryTest",
+        query = "select m from Member m" +
+                " where m.username = :username"
+        // [강점] : 네임드쿼리는 정적 쿼리라서 해당 문법에 에러가 있다면,
+        // 어플리케이션 로딩 시점에 빌드 에러가 발생한다
+)
 public class Member {
     @Id
     @GeneratedValue

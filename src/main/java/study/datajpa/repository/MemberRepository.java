@@ -1,6 +1,8 @@
 package study.datajpa.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import study.datajpa.entity.Member;
 
 import java.util.List;
@@ -13,4 +15,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // https://docs.spring.io/spring-data/jpa/docs/2.6.0/reference/html/#jpa.query-methods.query-creation
     // 이름이 좀 길어지는 단점이 생김
     List<Member> findByUsernameAndAgeGreaterThan(String username, int age);
+
+    // namedQuery 사용
+    @Query(name = "Member.namedQueryTest") // 해당 어노테이션 없어도 잘 동작함
+    // 만약, 네임드쿼리가 없다면 이름을 기반으로 쿼리를 생성하는 처리가 진행됨
+    List<Member> tryNamedQuery(@Param("username") String username);
 }

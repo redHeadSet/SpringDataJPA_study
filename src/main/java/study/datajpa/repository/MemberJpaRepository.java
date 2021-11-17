@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import study.datajpa.entity.Member;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NamedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,12 @@ public class MemberJpaRepository {
                         " and m.age > :age")
                 .setParameter("username", username)
                 .setParameter("age", age)
+                .getResultList();
+    }
+
+    public List<Member> tryNamedQuery(String username) {
+        return em.createNamedQuery("Member.namedQueryTest", Member.class)
+                .setParameter("username", username)
                 .getResultList();
     }
 }

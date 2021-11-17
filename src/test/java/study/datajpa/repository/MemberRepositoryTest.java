@@ -57,4 +57,20 @@ class MemberRepositoryTest {
             Assertions.assertThat(member.getAge()).isGreaterThan(40);
         });
     }
+
+    @Test
+    public void nameQueryTest() {
+        // given
+        Member member1 = new Member("findName", 20);
+        memberRepository.save(member1);
+
+        // when
+        List<Member> findMember = memberRepository.tryNamedQuery("findName");
+
+        // then
+        Assertions.assertThat(findMember.size()).isEqualTo(1);
+        findMember.forEach(each -> {
+            Assertions.assertThat(member1.getId()).isEqualTo(each.getId());
+        });
+    }
 }
