@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
@@ -39,7 +40,7 @@ class MemberRepositoryTest {
     @Test
     public void test2(){
         // given
-        makeSamename();
+        makeSamename("same name");
 
         // when
         List<Member> ungt = memberRepository.findByUsernameAndAgeGreaterThan("same name", 40);
@@ -70,7 +71,7 @@ class MemberRepositoryTest {
     @Test
     public void RepositoryQueryTest(){
         // given
-        makeSamename();
+        makeSamename("same name");
 
         // when
         List<Member> rmq = memberRepository.repositoryMethodQuery("same name", 40);
@@ -118,13 +119,69 @@ class MemberRepositoryTest {
         Assertions.assertThat(singleMem).isEqualTo(optMem.get());
     }
 
-    private void makeSamename() {
-        Member member1 = new Member("same name", 20);
-        Member member2 = new Member("same name", 30);
-        Member member3 = new Member("same name", 40);
-        Member member4 = new Member("same name", 50);
-        Member member5 = new Member("same name", 60);
-        Member member6 = new Member("same name", 70);
+    @Test
+    public void Pageing() {
+        // given
+        int age = 30;
+        makeSameAge(age);
+        int offset = 0, limit = 3;
+
+        // when
+        // 중요 : page index 는 0부터 시작한다!!
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+        Page<Member> page = memberRepository.findPageByAge(age, pageRequest);
+
+        // then
+        List<Member> content = page.getContent();
+        content.forEach(member -> {
+            System.out.println("page member - " + member.getUsername() + "(" + member.getAge() + ")");
+        });
+
+        System.out.println("page getTotalElements : "+ page.getTotalElements());
+        System.out.println("page getNumber : "+ page.getNumber());
+        System.out.println("page getTotalPages : "+ page.getTotalPages());
+        System.out.println("page isFirst : "+ page.isFirst());
+        System.out.println("page hasNext : "+ page.hasNext());
+
+        // DTO 처리 예시
+        Page<MemberDto> exportDto = page.map(member -> new MemberDto(member.getId(), member.getUsername(), "team name"));
+
+        // then ~ 2
+        Slice<Member> slice = memberRepository.findSliceByAge(age, pageRequest);
+        // -> 실제 쿼리는 limit 4로 나간다 (size가 3인데도 불구하고)
+        List<Member> slice_content = slice.getContent();
+        // 하지만 Content는 3개로 출력됨
+        content.forEach(member -> {
+            System.out.println("slice member - " + member.getUsername() + "(" + member.getAge() + ")");
+        });
+
+        System.out.println("slice getNumber : "+ slice.getNumber());
+        System.out.println("slice isFirst : "+ slice.isFirst());
+        System.out.println("slice hasNext : "+ slice.hasNext());
+    }
+
+    private void makeSamename(String name) {
+        Member member1 = new Member(name, 20);
+        Member member2 = new Member(name, 30);
+        Member member3 = new Member(name, 40);
+        Member member4 = new Member(name, 50);
+        Member member5 = new Member(name, 60);
+        Member member6 = new Member(name, 70);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+        memberRepository.save(member4);
+        memberRepository.save(member5);
+        memberRepository.save(member6);
+    }
+
+    private void makeSameAge(int age) {
+        Member member1 = new Member("mem1", age);
+        Member member2 = new Member("mem2", age);
+        Member member3 = new Member("mem3", age);
+        Member member4 = new Member("mem4", age);
+        Member member5 = new Member("mem5", age);
+        Member member6 = new Member("mem6", age);
         memberRepository.save(member1);
         memberRepository.save(member2);
         memberRepository.save(member3);
