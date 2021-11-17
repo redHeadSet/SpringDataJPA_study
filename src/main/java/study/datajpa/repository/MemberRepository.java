@@ -7,6 +7,7 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 // JPA 확장 인터페이스. JpaRepository를 상속받는 인터페이스로 만들어야 함
 // 타입과 키의 변수형을 알려줘야 한다 <[클래스], [키 타입]>
@@ -23,13 +24,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 만약, 네임드쿼리가 없다면 이름을 기반으로 쿼리를 생성하는 처리가 진행됨
     List<Member> tryNamedQuery(@Param("username") String username);
 
-    
+
     // repository에 바로 쿼리 지정 - 많이 쓰는 방법
     // namedQuery의 장점을 가짐 : 정적 쿼리기 때문에 오타 발생 시 어플리케이션 로딩 시점에서 확인 가능 
-    @Query( "select m from Member m" + 
+    @Query("select m from Member m" +
             " where m.username = :username" +
             " and m.age > :age")
-    List<Member> repositoryMethodQuery(@Param("username") String username, 
+    List<Member> repositoryMethodQuery(@Param("username") String username,
                                        @Param("age") int age);
     // cf. 동적 쿼리는? : QueryDSL 로 처리하는 것이 좋다
 
@@ -40,4 +41,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select new study.datajpa.dto.MemberDto(m.id, m.username, t.name) from Member m" +
             " join m.team t")
     List<MemberDto> findDtos();
+
+    // 반환 타입을 유연하게 써도 알아먹음
+    // https://docs.spring.io/spring-data/jpa/docs/2.6.0/reference/html/#appendix.query.return.types
+    List<Member> findMemberListByUsername(String username);
+    Member findSingleMemberByUsername(String username);
+    Optional<Member> findOptionalMemberByUsername(String username);
 }

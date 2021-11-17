@@ -102,6 +102,22 @@ class MemberRepositoryTest {
         });
     }
 
+    @Test
+    public void multiReturnTest() {
+        // given
+        makeDefault();
+
+        // when
+        List<Member> listMem = memberRepository.findMemberListByUsername("mem1");
+        Member singleMem = memberRepository.findSingleMemberByUsername("mem1");
+        Optional<Member> optMem = memberRepository.findOptionalMemberByUsername("mem1");
+
+        // then
+        Assertions.assertThat(listMem.size()).isEqualTo(1);
+        Assertions.assertThat(singleMem).isEqualTo(listMem.get(0));
+        Assertions.assertThat(singleMem).isEqualTo(optMem.get());
+    }
+
     private void makeSamename() {
         Member member1 = new Member("same name", 20);
         Member member2 = new Member("same name", 30);
