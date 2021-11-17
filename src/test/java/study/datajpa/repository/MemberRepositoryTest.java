@@ -73,4 +73,30 @@ class MemberRepositoryTest {
             Assertions.assertThat(member1.getId()).isEqualTo(each.getId());
         });
     }
+
+    @Test
+    public void RepositoryQueryTest(){
+        // given
+        Member member1 = new Member("same name", 20);
+        Member member2 = new Member("same name", 30);
+        Member member3 = new Member("same name", 40);
+        Member member4 = new Member("same name", 50);
+        Member member5 = new Member("same name", 60);
+        Member member6 = new Member("same name", 70);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+        memberRepository.save(member4);
+        memberRepository.save(member5);
+        memberRepository.save(member6);
+
+        // when
+        List<Member> rmq = memberRepository.repositoryMethodQuery("same name", 40);
+
+        // then
+        rmq.forEach(each -> {
+            System.out.println("age : " + each.getAge());
+            Assertions.assertThat(each.getAge()).isGreaterThan(40);
+        });
+    }
 }

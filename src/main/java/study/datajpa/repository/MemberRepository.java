@@ -17,7 +17,19 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findByUsernameAndAgeGreaterThan(String username, int age);
 
     // namedQuery 사용
-    @Query(name = "Member.namedQueryTest") // 해당 어노테이션 없어도 잘 동작함
+    @Query(name = "Member.namedQueryTest")
+    // 해당 어노테이션 없어도 잘 동작함
     // 만약, 네임드쿼리가 없다면 이름을 기반으로 쿼리를 생성하는 처리가 진행됨
     List<Member> tryNamedQuery(@Param("username") String username);
+
+    
+    // repository에 바로 쿼리 지정 - 많이 쓰는 방법
+    // namedQuery의 장점을 가짐 : 정적 쿼리기 때문에 오타 발생 시 어플리케이션 로딩 시점에서 확인 가능 
+    @Query( "select m from Member m" + 
+            " where m.username = :username" +
+            " and m.age > :age")
+    List<Member> repositoryMethodQuery(@Param("username") String username, 
+                                       @Param("age") int age);
+    // cf. 동적 쿼리는? : QueryDSL 로 처리하는 것이 좋다
+
 }
