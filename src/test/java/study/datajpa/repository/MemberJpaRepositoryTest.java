@@ -69,4 +69,30 @@ class MemberJpaRepositoryTest {
                 System.out.println("member2 : " + member2.getUsername());
         });
     }
+
+    @Test
+    public void test3(){
+        // given
+        Member member1 = new Member("same name", 20);
+        Member member2 = new Member("same name", 30);
+        Member member3 = new Member("same name", 40);
+        Member member4 = new Member("same name", 50);
+        Member member5 = new Member("same name", 60);
+        Member member6 = new Member("same name", 70);
+        memberJpaRepository.save(member1);
+        memberJpaRepository.save(member2);
+        memberJpaRepository.save(member3);
+        memberJpaRepository.save(member4);
+        memberJpaRepository.save(member5);
+        memberJpaRepository.save(member6);
+
+        // when
+        List<Member> ungt = memberJpaRepository.findByUserNameAndAgeGreaterThan("same name", 40);
+
+        // then
+        ungt.forEach(member -> {
+            System.out.println("age : " + member.getAge());
+            Assertions.assertThat(member.getAge()).isGreaterThan(40);
+        });
+    }
 }
