@@ -3,6 +3,7 @@ package study.datajpa.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -69,4 +70,16 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 하지만 DB에 바로 쿼리를 던지는 것이기 때문에, 영속성 컨텍스트와 일치하지 않을 수 있다
     // 즉, 벌크 연산 후에는 영속성 컨텍스트를 전부 날려주는 것이 좋다
     // Data JPA에서 지원하는 Modifying(clearAutomatically 값을 true로 설정하면 자동으로 EntityManager를 클리어
+
+    @Query("select m from Member m join fetch m.team")
+    List<Member> findAllFetchJoin();
+    // fetch join을 매번 적기 너무 귀찮음 : EntityGraph로 처리 가능 - JPA 표준에 등록된 기능
+
+    @Override
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findAll(); // findAll 처리 시 team 객체를 들고옴
+ 
+    @EntityGraph(attributePaths = {"team"})
+    @Query("select m from Member m")
+    List<Member> findAllFetchJoinToEntityGraph();
 }

@@ -177,6 +177,22 @@ class MemberRepositoryTest {
         Assertions.assertThat(updatedRow).isEqualTo(5);
     }
 
+    @Test
+    public void findMemberLazy() {
+        // given
+        makeDefault();
+        em.flush(); em.clear();
+
+        // when
+//        List<Member> all = memberRepository.findAll();
+        List<Member> all = memberRepository.findAllFetchJoin();
+
+        // then
+        all.forEach(member -> {
+            System.out.println("member.getUsername() = " + member.getUsername());
+        });
+    }
+
     private void makeSamename(String name) {
         Member member1 = new Member(name, 20);
         Member member2 = new Member(name, 30);
