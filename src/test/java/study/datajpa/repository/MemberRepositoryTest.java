@@ -193,6 +193,20 @@ class MemberRepositoryTest {
         });
     }
 
+    @Test
+    public void queryHint(){
+        // given
+        Member hi = memberRepository.save(new Member("hi", 10));
+        em.flush(); em.clear();
+
+        // when
+        Member findedMember = memberRepository.findReadOnlyByUsername("hi");
+//        findedMember.setUsername("hi2");
+
+
+        // then
+    }
+
     private void makeSamename(String name) {
         Member member1 = new Member(name, 20);
         Member member2 = new Member(name, 30);
