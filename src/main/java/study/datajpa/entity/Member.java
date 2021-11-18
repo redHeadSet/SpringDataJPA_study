@@ -15,7 +15,7 @@ import javax.persistence.*;
         // [강점] : 네임드쿼리는 정적 쿼리라서 해당 문법에 에러가 있다면,
         // 어플리케이션 로딩 시점에 빌드 에러가 발생한다
 )
-public class Member {
+public class Member extends BaseEntity{
     @Id
     @GeneratedValue
     @Column(name = "member_id")

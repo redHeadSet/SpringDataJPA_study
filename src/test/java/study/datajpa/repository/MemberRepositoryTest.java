@@ -207,6 +207,23 @@ class MemberRepositoryTest {
         // then
     }
 
+    @Test
+    public void baseEntityTest() throws InterruptedException {
+        // given
+        Member base = memberRepository.save(new Member("base"));
+        System.out.println("name = " + base.getUsername());
+        System.out.println("createDate = " + base.getCreatedDate());
+        System.out.println("updateDate = " + base.getUpdatedDate());
+
+        Thread.sleep(1000);
+        base.setUsername("new name");
+        em.flush();
+
+        System.out.println("new name = " + base.getUsername());
+        System.out.println("new createDate = " + base.getCreatedDate());
+        System.out.println("new updateDate = " + base.getUpdatedDate());
+    }
+
     private void makeSamename(String name) {
         Member member1 = new Member(name, 20);
         Member member2 = new Member(name, 30);
