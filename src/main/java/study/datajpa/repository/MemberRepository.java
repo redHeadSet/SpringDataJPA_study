@@ -15,7 +15,7 @@ import java.util.Optional;
 
 // JPA 확장 인터페이스. JpaRepository를 상속받는 인터페이스로 만들어야 함
 // 타입과 키의 변수형을 알려줘야 한다 <[클래스], [키 타입]>
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     // 함수명만 잘 입력해도 DataJpa가 알아서 잘 만들어줌
     // https://docs.spring.io/spring-data/jpa/docs/2.6.0/reference/html/#jpa.query-methods.query-creation
