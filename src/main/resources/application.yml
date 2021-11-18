@@ -13,6 +13,12 @@ spring:
 #        show_sql: true
         format_sql: true
 
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 2000
+
 logging.level:
   org.hibernate.SQL: debug  # 위 hibernate 의 show_sql 이 아닌 로그 파일로 남김
 #  org.hibernate.type: trace
