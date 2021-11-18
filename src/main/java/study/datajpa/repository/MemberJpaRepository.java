@@ -56,4 +56,11 @@ public class MemberJpaRepository {
                 .setParameter("username", username)
                 .getResultList();
     }
+
+    public int agePlus(int age){
+        return em.createQuery("update Member m set m.age = m.age + 1" +
+                " where m.age >= :age")
+                .setParameter("age", age)
+                .executeUpdate(); // update 된 row 갯수가 return
+    }
 }

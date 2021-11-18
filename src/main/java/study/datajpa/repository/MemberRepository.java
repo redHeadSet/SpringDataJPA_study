@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import study.datajpa.dto.MemberDto;
@@ -60,4 +61,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query( value = "select m from Member m where m.age = :age",
             countQuery = "select count(m) from Member m where m.age = :age")
     Page<Member> findPageCustomCountByAge(@Param("age") int age, Pageable pageable);
+
+    @Modifying(clearAutomatically = true)  // 벌크 update 처리 시 필요한 어노테이션 - 없는 경우, InvalidDataAccessApiUsageException 발생
+    @Query("update Member m set m.age = m.age + 1 where age >= :age")
+    int agePlus(@Param("age") int age);
+    // [벌크 연산의 주의점]
+    // 하지만 DB에 바로 쿼리를 던지는 것이기 때문에, 영속성 컨텍스트와 일치하지 않을 수 있다
+    // 즉, 벌크 연산 후에는 영속성 컨텍스트를 전부 날려주는 것이 좋다
+    // Data JPA에서 지원하는 Modifying(clearAutomatically 값을 true로 설정하면 자동으로 EntityManager를 클리어
 }

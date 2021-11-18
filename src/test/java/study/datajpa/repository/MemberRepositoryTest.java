@@ -10,6 +10,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,8 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
     @Autowired
     TeamRepository teamRepository;
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     public void 회원가입(){
@@ -158,6 +162,19 @@ class MemberRepositoryTest {
         System.out.println("slice getNumber : "+ slice.getNumber());
         System.out.println("slice isFirst : "+ slice.isFirst());
         System.out.println("slice hasNext : "+ slice.hasNext());
+    }
+
+    @Test
+    public void bulkTest() {
+        // given
+        makeDefault();
+
+        // when
+        int updatedRow = memberRepository.agePlus(30);
+//        em.flush(); em.clear(); // clearAutomatically 값으로 처리
+
+        // then
+        Assertions.assertThat(updatedRow).isEqualTo(5);
     }
 
     private void makeSamename(String name) {
