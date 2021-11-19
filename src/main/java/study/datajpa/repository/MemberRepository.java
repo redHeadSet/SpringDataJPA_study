@@ -49,16 +49,19 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     // 반환 타입을 유연하게 써도 알아먹음
     // https://docs.spring.io/spring-data/jpa/docs/2.6.0/reference/html/#appendix.query.return.types
     List<Member> findMemberListByUsername(String username);
+
     Member findSingleMemberByUsername(String username);
+
     Optional<Member> findOptionalMemberByUsername(String username);
 
     Page<Member> findPageByAge(int age, Pageable pageable);
+
     Slice<Member> findSliceByAge(int age, Pageable pageable);
 
     // Paging 처리 시, 성능 문제가 되는 부분은 total count를 구하는 부분이다
     // (total count 쿼리 역시 똑같이 join 처리를 하는... 비효율적인 부분이 생길 수 있다)
     // 이를 위해 count query는 따로 처리해야 하는 경우가 있다
-    @Query( value = "select m from Member m where m.age = :age",
+    @Query(value = "select m from Member m where m.age = :age",
             countQuery = "select count(m) from Member m where m.age = :age")
     Page<Member> findPageCustomCountByAge(@Param("age") int age, Pageable pageable);
 
@@ -77,7 +80,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Override
     @EntityGraph(attributePaths = {"team"})
     List<Member> findAll(); // findAll 처리 시 team 객체를 들고옴
- 
+
     @EntityGraph(attributePaths = {"team"})
     @Query("select m from Member m")
     List<Member> findAllFetchJoinToEntityGraph();
@@ -92,4 +95,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     List<Member> findLockByUsername(String username);
 
     List<GetUserNameOnly> findProjectionsByUsername(@Param("username") String username);
+
+    @Query(value = "select * from member where username = ?", nativeQuery = true)
+    Member findMemberNative(String username);
 }

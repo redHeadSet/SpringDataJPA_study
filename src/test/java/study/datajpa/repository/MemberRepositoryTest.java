@@ -266,6 +266,18 @@ class MemberRepositoryTest {
         }
     }
 
+    @Test
+    public void nativeTest() {
+        // given
+        makeDefault();
+
+        // when
+        Member mem1 = memberRepository.findMemberNative("mem1");
+
+        // then
+        System.out.println("mem1 = " + mem1.getUsername());
+    }
+
     private void makeSamename(String name) {
         Member member1 = new Member(name, 20);
         Member member2 = new Member(name, 30);
