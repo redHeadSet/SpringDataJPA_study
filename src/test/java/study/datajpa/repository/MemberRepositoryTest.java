@@ -246,9 +246,24 @@ class MemberRepositoryTest {
         System.out.println("all size : " + all.size());
 
         // then
-        if(findMemList.size() != 1)
+        if (findMemList.size() != 1)
             Assertions.fail("size not 1 [" + findMemList.size() + "]");
         System.out.println("findMemList = " + findMemList.get(0).getUsername());
+    }
+
+    @Test
+    public void projections(){
+        // given
+        makeDefault();
+
+        // when
+        // 인터페이스만 만들면 구현체를 Data JPA가 만들어서 처리 가능
+        List<GetUserNameOnly> projectionsResult = memberRepository.findProjectionsByUsername("mem1");
+
+        // then
+        for (GetUserNameOnly userNameOnly : projectionsResult) {
+            System.out.println("userNameOnly = " + userNameOnly);
+        }
     }
 
     private void makeSamename(String name) {
