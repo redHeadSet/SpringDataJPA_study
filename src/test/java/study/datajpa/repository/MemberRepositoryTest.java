@@ -213,7 +213,7 @@ class MemberRepositoryTest {
         Member base = memberRepository.save(new Member("base"));
         System.out.println("name = " + base.getUsername());
         System.out.println("createDate = " + base.getCreatedDate());
-        System.out.println("updateDate = " + base.getUpdatedDate());
+//        System.out.println("updateDate = " + base.getUpdatedDate());
 
         Thread.sleep(1000);
         base.setUsername("new name");
@@ -221,7 +221,34 @@ class MemberRepositoryTest {
 
         System.out.println("new name = " + base.getUsername());
         System.out.println("new createDate = " + base.getCreatedDate());
-        System.out.println("new updateDate = " + base.getUpdatedDate());
+//        System.out.println("new updateDate = " + base.getUpdatedDate());
+    }
+
+    // QueryByExample
+    // Outer Join 안됨, 단순 비교 정도만 가능
+    // QueryDSL 사용으로 해결 가능
+    @Test
+    public void queryExam() {
+        // given
+        makeDefault();
+        em.flush();
+        em.clear();
+
+        // when
+        Member member = new Member("mem1");
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("age");
+
+//        Example<Member> memberExample = Example.of(member);
+        Example<Member> memberExample = Example.of(member, matcher);
+
+        List<Member> findMemList = memberRepository.findAll(memberExample);
+        List<Member> all = memberRepository.findAll();
+        System.out.println("all size : " + all.size());
+
+        // then
+        if(findMemList.size() != 1)
+            Assertions.fail("size not 1 [" + findMemList.size() + "]");
+        System.out.println("findMemList = " + findMemList.get(0).getUsername());
     }
 
     private void makeSamename(String name) {

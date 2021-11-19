@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 public class MemberController {
     private final MemberRepository memberRepository;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
         memberRepository.save(new Member("mem1", 10));
         memberRepository.save(new Member("mem2", 20));
